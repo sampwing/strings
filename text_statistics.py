@@ -31,12 +31,17 @@ class TextStatistics(object):
             text = re.sub(regex, replacement, text)
         return text
 
+    @memoized
     def flesch_kincaid_reading_ease(self):
         return round((206.835 - (1.015 * self.average_words_sentence()) - (84.6 * self.average_syllables_word()))*10)/10;
 
     @memoized
+    def flesch_kincaid_grade_level(self):
+        return round(((0.39 * self.average_words_sentence()) + (11.8 * self.average_syllables_word()) - 15.59)*10)/10;
+
+    @memoized
     def average_words_sentence(self):
-        return self.word_count() / self.sentence_count()
+        return self.word_count() / (self.sentence_count() or 1)
 
     @memoized
     def word_count(self):
@@ -126,7 +131,8 @@ class TextStatistics(object):
 
 
 if __name__ == '__main__':
-    text_statistics = TextStatistics('<h1>I like cats.</h1>')
+    text_statistics = TextStatistics('The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.')
     print text_statistics.average_words_sentence()
     print text_statistics.flesch_kincaid_reading_ease()
+    print text_statistics.flesch_kincaid_grade_level()
     print text_statistics.syllable_count('dogish')
