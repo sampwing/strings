@@ -83,7 +83,7 @@ class TextStatistics(object):
             '[aeiou]{3}',
             '^mc',
             'ism$',
-            #'([^aeiouy])\1l$',
+            '([^aeiouy])\1l$', #if error happens check this XXX
             '[^l]lien',
             '^coa[dglx].',
             '[^gq]ua[^auieo]',
@@ -105,8 +105,20 @@ class TextStatistics(object):
             if re.search(regex, word):
                 word = re.sub(regex, '', word)
                 prefix_suffix_count += 1
-        return prefix_suffix_count
+        word_part_count = len(filter(None, re.split(r'[^aeiouy]+', word)))
+        syllable_count = word_part_count + prefix_suffix_count
+        for syllable in sub_syllables:
+            if re.search(syllable, word):
+                syllable_count -= 1
+        for syllable in add_syllables:
+            if re.search(syllable, word):
+                syllable_count += 1
+        return syllable_count or 1
+
+
+
 if __name__ == '__main__':
     text_statistics = TextStatistics('<h1>I. Like. Cats.</h1>')
     print text_statistics.average_words_sentence()
-    print text_statistics.flesch_kincaid_reading_ease()
+    #print text_statistics.flesch_kincaid_reading_ease()
+    print text_statistics.syllable_count('dogish')
