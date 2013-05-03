@@ -31,13 +31,27 @@ class TextStatistics(object):
             text = re.sub(regex, replacement, text)
         return text
 
-    @memoized
     def flesch_kincaid_reading_ease(self):
-        return round((206.835 - (1.015 * self.average_words_sentence()) - (84.6 * self.average_syllables_word()))*10)/10;
+        return round((206.835 - (1.015 * self.average_words_sentence()) - (84.6 * self.average_syllables_word())) * 10) / 10
+
+    def flesch_kincaid_grade_level(self):
+        return round(((0.39 * self.average_words_sentence()) + (11.8 * self.average_syllables_word()) - 15.59) * 10) / 10
+
+    def gunning_fog_score(self):
+        return round(((self.average_words_sentence() + self.percentage_words_three_syllables()) * 0.4) * 10) / 10
 
     @memoized
-    def flesch_kincaid_grade_level(self):
-        return round(((0.39 * self.average_words_sentence()) + (11.8 * self.average_syllables_word()) - 15.59)*10)/10;
+    def percentage_words_three_syllables(self, count_proper_nouns=False):
+        return self.words_three_syllables() / (self.word_count() or 1) * 100
+
+    @memoized
+    def words_three_syllables(self, count_proper_nouns=False):
+        words_with_three_syllables = 0
+        for word in re.split(r'\s+', self.text):
+            if re.match(r'^[A-Z]', word) or count_proper_nouns == True:
+                if self.syllable_count(word=word) > 2:
+                    words_with_three_syllables += 1
+        return words_with_three_syllables
 
     @memoized
     def average_words_sentence(self):
@@ -135,4 +149,4 @@ if __name__ == '__main__':
     print text_statistics.average_words_sentence()
     print text_statistics.flesch_kincaid_reading_ease()
     print text_statistics.flesch_kincaid_grade_level()
-    print text_statistics.syllable_count('dogish')
+    print text_statistics.gunning_fog_score()
