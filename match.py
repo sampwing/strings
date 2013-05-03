@@ -1,5 +1,5 @@
 def my_hash(string):
-    return sum([2**index * ord(character) for (index, character) in enumerate(string)])
+    return sum([(0b1 << index) * ord(character) for (index, character) in enumerate(string)])
 
 def search_and_match(string_to_match, text_to_search):
     """return a list of indices found within text_to_search that match string_to_match"""
