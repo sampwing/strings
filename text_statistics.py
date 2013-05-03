@@ -4,9 +4,6 @@
 # https://github.com/DaveChild/Text-Statistics
 from __future__ import division
 import re
-import sys
-
-from collections import defaultdict
 
 from memoize import memoized
 
@@ -32,19 +29,27 @@ class TextStatistics(object):
         return text
 
     def flesch_kincaid_reading_ease(self):
-        return round((206.835 - (1.015 * self.average_words_sentence()) - (84.6 * self.average_syllables_word())) * 10) / 10
+        return round((206.835 - (1.015 * self.average_words_sentence())
+                      - (84.6 * self.average_syllables_word())) * 10) / 10
 
     def flesch_kincaid_grade_level(self):
-        return round(((0.39 * self.average_words_sentence()) + (11.8 * self.average_syllables_word()) - 15.59) * 10) / 10
+        return round(((0.39 * self.average_words_sentence())
+                      + (11.8 * self.average_syllables_word()) - 15.59) * 10) / 10
 
     def gunning_fog_score(self):
         return round(((self.average_words_sentence() + self.percentage_words_three_syllables()) * 0.4) * 10) / 10
 
     def coleman_liau_index(self):
-        return round(((5.89 * self.letter_count() / (self.word_count() + 1)) - (0.3 * self.sentence_count() / (self.word_count() or 1)) - 15.8 ) *10) / 10
+        return round(((5.89 * self.letter_count() / (self.word_count() + 1))
+                      - (0.3 * self.sentence_count() / (self.word_count() or 1)) - 15.8 ) *10) / 10
 
     def smog_index(self):
-        return round(1.043 * ((self.words_three_syllables() * (30 / self.sentence_count())) + 3.1291)**.5 *10) / 10
+        return round(1.043 * ((self.words_three_syllables() * (30 / (self.sentence_count() or 1)))
+                              + 3.1291)**.5 * 10) / 10
+
+    def automated_readability_index(self):
+        return round(((4.71 * (self.letter_count() / self.word_count()))
+                      + (0.5 * (self.word_count() / (self.sentence_count() + 1))) - 21.43) * 10) / 10
 
     @memoized
     def letter_count(self):
@@ -161,3 +166,4 @@ if __name__ == '__main__':
     print text_statistics.gunning_fog_score()
     print text_statistics.coleman_liau_index()
     print text_statistics.smog_index()
+    print text_statistics.automated_readability_index()
