@@ -88,6 +88,12 @@ class TextStatistics(object):
             syllable_count += self.syllable_count(word=word)
         return (syllable_count or 1) / (word_count or 1)
 
+    def count_syllables(self):
+        syllables = 0
+        for word in re.split(r'\s+', self.text):
+            syllables += self.syllable_count(word=word)
+        return syllables
+
     @staticmethod
     def syllable_count(word):
         problem_words = {'simile': 3,
@@ -125,7 +131,7 @@ class TextStatistics(object):
             '[aeiou]{3}',
             '^mc',
             'ism$',
-            '([^aeiouy])\1l$', #if error happens check this XXX
+            '([^aeiouy])\1l$', 
             '[^l]lien',
             '^coa[dglx].',
             '[^gq]ua[^auieo]',

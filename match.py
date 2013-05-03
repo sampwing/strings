@@ -2,7 +2,7 @@ def my_hash(string):
     return sum([(0b1 << index) * ord(character) for (index, character) in enumerate(string)])
 
 def search_and_match(string_to_match, text_to_search):
-    """return a list of indices found within text_to_search that match string_to_match"""
+    """return a list of starting indices found within text_to_search that match string_to_match"""
     original_hashed_value = my_hash(string=string_to_match)
     match_length = len(string_to_match)
     hashed_value = my_hash(string=text_to_search[:match_length])
