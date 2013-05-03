@@ -10,7 +10,7 @@ def search_and_match(string_to_match, text_to_search):
     if hashed_value == original_hashed_value:
         matches.append(0)
     for index in xrange(1, len(text_to_search) - match_length + 1):
-        hashed_value -= 2**0 * ord(text_to_search[index - 1])
+        hashed_value -= ord(text_to_search[index - 1])
         hashed_value /= 2
         hashed_value += 2**(match_length -1) * ord(text_to_search[index + match_length - 1])
         if hashed_value == original_hashed_value:
