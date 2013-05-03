@@ -40,6 +40,13 @@ class TextStatistics(object):
     def gunning_fog_score(self):
         return round(((self.average_words_sentence() + self.percentage_words_three_syllables()) * 0.4) * 10) / 10
 
+    def coleman_liau_index(self):
+        return round(((5.89 * self.letter_count() / (self.word_count() + 1)) - (0.3 * self.sentence_count() / (self.word_count() or 1)) - 15.8 ) *10) / 10
+
+    @memoized
+    def letter_count(self):
+        return len(re.sub(r'[^a-zA-Z]+', '', self.text))
+
     @memoized
     def percentage_words_three_syllables(self, count_proper_nouns=False):
         return self.words_three_syllables() / (self.word_count() or 1) * 100
@@ -150,3 +157,4 @@ if __name__ == '__main__':
     print text_statistics.flesch_kincaid_reading_ease()
     print text_statistics.flesch_kincaid_grade_level()
     print text_statistics.gunning_fog_score()
+    print text_statistics.coleman_liau_index()
