@@ -46,7 +46,67 @@ class TextStatistics(object):
     def sentence_count(self):
         return len(re.findall(r'[.!?]', self.text))
 
-
+    @staticmethod
+    def syllable_count(word):
+        problem_words = {'simile': 3,
+                         'forever': 3,
+                         'shoreline': 2
+                        }
+        word = re.sub(r'[^a-z]', '', word.lower())
+        if word in problem_words:
+            return problem_words[word]
+        sub_syllables = ['cial',
+                         'tia',
+                         'cius',
+                         'cious',
+                         'giu',
+                         'ion',
+                         'iou',
+                         'sia$',
+                         '[^aeiouyt]{2,}ed$',
+                         '.ely$',
+                         '[cg]h?e[rsd]?$',
+                         'rved?$',
+                         '[aeiouy][ds]es?$',
+                         '[aeiouy][^aeiouydt]e[rsd]?$',
+                         '^[dr]e[aeiou][^aeiou]+$',
+                         '[aeiouy]rse$',
+                         ]
+        add_syllables = [
+            'ia',
+            'riet',
+            'dien',
+            'iu',
+            'io',
+            'ii',
+            '[aeiouym]bl$',
+            '[aeiou]{3}',
+            '^mc',
+            'ism$',
+            #'([^aeiouy])\1l$',
+            '[^l]lien',
+            '^coa[dglx].',
+            '[^gq]ua[^auieo]',
+            'dnt$',
+            'uity$',
+            'ie(r|st)$'
+        ]
+        prefix_suffix = [
+            '^un',
+            '^fore',
+            'ly$',
+            'less$',
+            'ful$',
+            'ers?$',
+            'ings?$',
+        ]
+        prefix_suffix_count = 0
+        for regex in prefix_suffix:
+            if re.search(regex, word):
+                word = re.sub(regex, '', word)
+                prefix_suffix_count += 1
+        return prefix_suffix_count
 if __name__ == '__main__':
     text_statistics = TextStatistics('<h1>I. Like. Cats.</h1>')
     print text_statistics.average_words_sentence()
+    print text_statistics.flesch_kincaid_reading_ease()
