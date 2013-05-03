@@ -15,14 +15,14 @@ class TextStatistics(object):
     def clean_text(text):
         full_stop_tags = ['li', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'dd']
         for tag in full_stop_tags:
-            text = re.sub(r'</{}>'.format(tag), '.', text)
+            text = re.sub(r'</{}>'.format(tag), '. ', text)
         replace_with = [('<[^>]+>', ''),    # Strip tags
                         ('[,:;()\-]', ' '), # Replace commans, hyphens etc (count them as spaces)
                         ('[.!?]', '.'),    # Unify terminators
                         ('^\s+',''),		# Strip leading whitespace
-                        ('[\n\r]*', ''),	# Replace new lines with spaces
+                        ('[\n\r]+', ''),	# Replace new lines with spaces
                         ('\.{2,}','.'),		# Check for duplicated terminators
-                        ('\s{2,}', ''),		# Remove multiple spaces
+                        ('\s{2,}', ' '),		# Remove multiple spaces
                         ]
         for (regex, replacement) in replace_with:
             text = re.sub(regex, replacement, text)
@@ -131,7 +131,7 @@ class TextStatistics(object):
             '[aeiou]{3}',
             '^mc',
             'ism$',
-            '([^aeiouy])\1l$', 
+            '([^aeiouy])\1l$',
             '[^l]lien',
             '^coa[dglx].',
             '[^gq]ua[^auieo]',
