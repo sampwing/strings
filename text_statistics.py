@@ -46,6 +46,14 @@ class TextStatistics(object):
     def sentence_count(self):
         return len(re.findall(r'[.!?]', self.text))
 
+    @memoized
+    def average_syllables_word(self):
+        syllable_count = 0
+        word_count = self.word_count()
+        for word in re.split(r'\s+', self.text):
+            syllable_count += self.syllable_count(word=word)
+        return (syllable_count or 1) / (word_count or 1)
+
     @staticmethod
     def syllable_count(word):
         problem_words = {'simile': 3,
@@ -118,7 +126,7 @@ class TextStatistics(object):
 
 
 if __name__ == '__main__':
-    text_statistics = TextStatistics('<h1>I. Like. Cats.</h1>')
+    text_statistics = TextStatistics('<h1>I like cats.</h1>')
     print text_statistics.average_words_sentence()
-    #print text_statistics.flesch_kincaid_reading_ease()
+    print text_statistics.flesch_kincaid_reading_ease()
     print text_statistics.syllable_count('dogish')
