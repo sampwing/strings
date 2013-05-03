@@ -7,10 +7,12 @@ import re
 import sys
 
 from collections import defaultdict
+
+from memoize import memoized
+
 class TextStatistics(object):
     def __init__(self, text):
         self.text = self.clean_text(text=text)
-        self.computed = defaultdict(lambda: -1)
 
     @staticmethod
     def clean_text(text):
@@ -32,32 +34,18 @@ class TextStatistics(object):
     def flesch_kincaid_reading_ease(self):
         return round((206.835 - (1.015 * self.average_words_sentence()) - (84.6 * self.average_syllables_word()))*10)/10;
 
+    @memoized
     def average_words_sentence(self):
-        function_name = sys._getframe().f_code.co_name
-        computed_value = self.computed[function_name]
-        if computed_value > 0:
-            return computed_value
-        value = self.word_count() / self.sentence_count()
-        self.computed[function_name] = value
-        return value
+        return self.word_count() / self.sentence_count()
 
+    @memoized
     def word_count(self):
-        function_name = sys._getframe().f_code.co_name
-        computed_value = self.computed[function_name]
-        if computed_value > 0:
-            return computed_value
-        value = len(self.text.split(' '))
-        self.computed[function_name] = value
-        return value
+        return len(self.text.split(' '))
 
+    @memoized
     def sentence_count(self):
-        function_name = sys._getframe().f_code.co_name
-        computed_value = self.computed[function_name]
-        if computed_value > 0:
-            return computed_value
-        value = len(re.findall(r'[.!?]', self.text))
-        self.computed[function_name] = value
-        return value
+        return len(re.findall(r'[.!?]', self.text))
+
 
 if __name__ == '__main__':
     text_statistics = TextStatistics('<h1>I. Like. Cats.</h1>')
