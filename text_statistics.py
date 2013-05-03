@@ -43,6 +43,9 @@ class TextStatistics(object):
     def coleman_liau_index(self):
         return round(((5.89 * self.letter_count() / (self.word_count() + 1)) - (0.3 * self.sentence_count() / (self.word_count() or 1)) - 15.8 ) *10) / 10
 
+    def smog_index(self):
+        return round(1.043 * ((self.words_three_syllables() * (30 / self.sentence_count())) + 3.1291)**.5 *10) / 10
+
     @memoized
     def letter_count(self):
         return len(re.sub(r'[^a-zA-Z]+', '', self.text))
@@ -150,7 +153,6 @@ class TextStatistics(object):
         return syllable_count or 1
 
 
-
 if __name__ == '__main__':
     text_statistics = TextStatistics('The Australian platypus is seemingly a hybrid of a mammal and reptilian creature.')
     print text_statistics.average_words_sentence()
@@ -158,3 +160,4 @@ if __name__ == '__main__':
     print text_statistics.flesch_kincaid_grade_level()
     print text_statistics.gunning_fog_score()
     print text_statistics.coleman_liau_index()
+    print text_statistics.smog_index()
